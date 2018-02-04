@@ -170,8 +170,8 @@ contract WrappedWED is ERC20Interface, Owned {
     // ------------------------------------------------------------------------
     // Owner can transfer out any accidentally sent ether 
     // ------------------------------------------------------------------------
-    function transferEther(address dest, uint amount) public onlyOwner returns (bool success) {
-        return dest.transfer(amount);
+    function transferEther(address dest, uint amount) public onlyOwner {
+        transfer(amount);
     }
 
     function () public payable {
