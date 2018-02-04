@@ -191,19 +191,17 @@ contract WrappedWED is ERC20Interface, Owned {
 	      wed = WednesdayCoin(coinAddr);
     }
 
-    function receiveApproval(address from, uint256 value, address tokenContract, bytes extraData) {
-
-      if (transferFrom(from, this, value))
+    function receiveApproval(address from, uint256 value, address tokenContract, bytes extraData) returns (bool) {
+      if (wed.transferFrom(from, this, value))
       {
-        if(tokenContract == address(wed))
-	      {
-          balances[from] = balances[from].add(value);
-          _totalSupply = _totalSupply.add(value);
-	      }
+        balances[from] = balances[from].add(value);
+        _totalSupply = _totalSupply.add(value);
+        return true;
       }
+      else return false;
     }
 
-    function unwrap(uint amount) {
+     function unwrap(uint amount) {
       require(balances[msg.sender] >= amount);
       _totalSupply = _totalSupply.sub(amount);
       balances[msg.sender] = balances[msg.sender].sub(amount);
