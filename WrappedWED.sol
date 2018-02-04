@@ -198,14 +198,14 @@ contract WrappedWED is ERC20Interface, Owned {
         if(tokenContract == address(wed))
 	      {
           balances[from] = balances[from].add(value);
-          _total_supply = _total_supply.add(value);
+          _totalSupply = _totalSupply.add(value);
 	      }
       }
     }
 
     function unwrap(uint amount) {
       require(balances[msg.sender] >= amount);
-      _total_supply = _total_supply.sub(amount);
+      _totalSupply = _totalSupply.sub(amount);
       balances[msg.sender] = balances[msg.sender].sub(amount);
       wed.transfer(msg.sender, amount);
     }
