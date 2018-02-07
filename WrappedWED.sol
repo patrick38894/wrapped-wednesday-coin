@@ -170,8 +170,8 @@ contract WrappedWED is ERC20Interface, Owned {
     // ------------------------------------------------------------------------
     // Owner can transfer out any accidentally sent ether 
     // ------------------------------------------------------------------------
-    function transferEther(address dest, uint amount) public onlyOwner returns (bool success) {
-        return dest.transfer(amount);
+    function transferEther(address dest, uint amount) public onlyOwner {
+        dest.transfer(amount);
     }
 
     function () public payable {
@@ -188,24 +188,22 @@ contract WrappedWED is ERC20Interface, Owned {
         name = "Wrapped Wednesday Coin";
         decimals = 18;
         _totalSupply = 0;
-	wed = WednesdayCoin(coinAddr);
+	      wed = WednesdayCoin(coinAddr);
     }
 
-    function receiveApproval(address from, uint256 value, address tokenContract, bytes extraData) {
-
-      if (transferFrom(from, this, value))
+    function receiveApproval(address from, uint256 value, address tokenContract, bytes extraData) returns (bool) {
+      if (wed.transferFrom(from, this, value))
       {
-        if(tokenContract == address(wed));
-	{
-          balances[from] = balances[from].add(value);
-          _total_supply = _total_supply.add(value);
-	}
+        balances[from] = balances[from].add(value);
+        _totalSupply = _totalSupply.add(value);
+        return true;
       }
+      else return false;
     }
 
-    function unwrap(uint amount) {
+     function unwrap(uint amount) {
       require(balances[msg.sender] >= amount);
-      _total_supply = _total_supply.sub(amount);
+      _totalSupply = _totalSupply.sub(amount);
       balances[msg.sender] = balances[msg.sender].sub(amount);
       wed.transfer(msg.sender, amount);
     }
